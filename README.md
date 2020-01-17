@@ -2,6 +2,8 @@
 //国际化 react-intl
 //权限管理
 //mobx
+//ant pro 样式
 多标签
-懒加载
+//懒加载
 主题切换
+mock

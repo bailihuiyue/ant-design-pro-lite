@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { IntlProvider, FormattedMessage } from 'react-intl';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
+  HashRouter
 } from "react-router-dom";
-import logo from './logo.svg';
 import langFile from './locales';
 import routes, { SubRoutes } from './config/route'
 import { observer } from "mobx-react"
@@ -15,11 +15,13 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import 'antd/dist/antd.css';
 import styles from './global.less';
+import { Loading } from '@/components/index'
+import BasicLayout from '@/pages/layout/BasicLayout'
 
 moment.locale('zhCN');
 
 export type langType = 'zh-CN' | 'en-US';
-
+const Login = lazy(() => import('@/pages/Login'));
 
 const App: any = observer(({ store }) => {
 
@@ -28,22 +30,29 @@ const App: any = observer(({ store }) => {
   return (
     <div className={styles.app}>
       <IntlProvider locale={lang} messages={langFile[localLang || lang]}>
-        {/* <div>
-        <FormattedMessage id="login" />
-        {store.lang}
-      </div> */}
-        <Router>
+        <HashRouter >
           <Switch>
-            {routes.map((route, i) => (
-              <SubRoutes key={i} {...route} />
-            ))}
+            <Suspense fallback={<Loading />}>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+            </Suspense>
+            <BasicLayout>
+              <Suspense fallback={<Loading />}>
+                {routes.map((route, i) => (
+                  <SubRoutes key={i} {...route} />
+                ))}
+              </Suspense>
+            </BasicLayout>
+            <Suspense fallback={<Loading />}>
             <Route path="*">
               <div>500</div>
             </Route>
+            </Suspense>
           </Switch>
-        </Router>
+        </HashRouter >
       </IntlProvider>
-    </div>
+    </div >
   );
 });
 
