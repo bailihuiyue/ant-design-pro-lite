@@ -18,8 +18,7 @@ const routes = [
   {
     path: "/123",
     component: BasicLayout,
-    exact: true,
-    auth: [1, 2]
+    exact: true
   },
   {
     path: "/123/404",
@@ -35,7 +34,7 @@ export function SubRoutes(route: any) {
   const auth: string[] | undefined = localStorage.getItem("auth")?.split(",");
   const hasAuth = subsetTo(route.auth, auth);
   return (
-    hasAuth ?
+    hasAuth || !route.auth ?
       <Route
         path={route.path}
         render={props => (
