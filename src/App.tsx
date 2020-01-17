@@ -28,6 +28,7 @@ const App: any = observer(({ store }) => {
   const { lang } = store;
   const localLang = localStorage.getItem('lang');
   return (
+    // TODO:bug:路由跳转异常
     <div className={styles.app}>
       <IntlProvider locale={lang} messages={langFile[localLang || lang]}>
         <HashRouter >
@@ -43,11 +44,14 @@ const App: any = observer(({ store }) => {
                   <SubRoutes key={i} {...route} />
                 ))}
               </Suspense>
+              <Route path="*">
+                <div>500</div>
+              </Route>
             </BasicLayout>
             <Suspense fallback={<Loading />}>
-            <Route path="*">
-              <div>500</div>
-            </Route>
+              <Route path="*">
+                <div>500</div>
+              </Route>
             </Suspense>
           </Switch>
         </HashRouter >
