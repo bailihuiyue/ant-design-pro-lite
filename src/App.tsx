@@ -16,7 +16,6 @@ import 'moment/locale/zh-cn';
 import 'antd/dist/antd.css';
 import styles from './global.less';
 import { Loading } from '@/components/index'
-import BasicLayout from '@/pages/layout/BasicLayout'
 
 moment.locale('zhCN');
 
@@ -28,31 +27,23 @@ const App: any = observer(({ store }) => {
   const { lang } = store;
   const localLang = localStorage.getItem('lang');
   return (
-    // TODO:bug:路由跳转异常
     <div className={styles.app}>
       <IntlProvider locale={lang} messages={langFile[localLang || lang]}>
         <HashRouter >
           <Switch>
-            <Suspense fallback={<Loading />}>
-              <Route exact path="/login">
-                <Login />
-              </Route>
-            </Suspense>
-            <BasicLayout>
+            <Route exact path="/login">
               <Suspense fallback={<Loading />}>
-                {routes.map((route, i) => (
-                  <SubRoutes key={i} {...route} />
-                ))}
+                <Login />
               </Suspense>
-              <Route path="*">
+            </Route>
+            {routes.map((route, i) => (
+              <SubRoutes key={i} {...route} />
+            ))}
+            <Route path="*">
+              <Suspense fallback={<Loading />}>
                 <div>500</div>
-              </Route>
-            </BasicLayout>
-            <Suspense fallback={<Loading />}>
-              <Route path="*">
-                <div>500</div>
-              </Route>
-            </Suspense>
+              </Suspense>
+            </Route>
           </Switch>
         </HashRouter >
       </IntlProvider>

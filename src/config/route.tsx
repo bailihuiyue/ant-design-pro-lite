@@ -1,13 +1,14 @@
-import React, { lazy } from "react";
+import React, { lazy, Suspense } from "react";
 import {
   Route,
   Redirect
 } from "react-router-dom";
-
+import { Loading } from '@/components/index'
 import { subsetTo } from '../utils/utils'
 
-const NoAauth = lazy(() => import('@/pages/Authorized/404'));
-const NotFonud = lazy(() => import('@/pages/Authorized/403'));
+import BasicLayout from '@/pages/layout/BasicLayout'
+const NoAauth = lazy(() => import('@/pages/Authorized/403'));
+const NotFonud = lazy(() => import('@/pages/Authorized/404'));
 const Welcome = lazy(() => import('@/pages/Welcome'));
 
 // 由于官方不支持路由嵌套,因此router-config没有子路由的概念,都是平级的,如果想实现子路由,可以递归,然后动态生成打平了的<Router>
@@ -18,18 +19,14 @@ const routes = [
     component: Welcome
   },
   {
-    path: "/error",
+    path: "/403",
     component: NoAauth,
     exact: true
   },
   {
     path: "/error/404",
     component: NotFonud
-  },
-  // {
-  //   path: "*",
-  //   component: Welcome
-  // }
+  }
 ];
 
 export function SubRoutes(route: any) {
@@ -40,7 +37,11 @@ export function SubRoutes(route: any) {
       <Route
         path={route.path}
         render={props => (
-          <route.component {...props} routes={route.routes} />
+          <BasicLayout>
+            <Suspense fallback={<Loading />}>
+              <route.component {...props} routes={route.routes} />
+            </Suspense>
+          </BasicLayout>
         )}
       /> :
       <Redirect to={{ pathname: "/403" }} />
