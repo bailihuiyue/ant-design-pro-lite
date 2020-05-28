@@ -11,6 +11,7 @@ import { FormattedMessage } from 'react-intl';
 class BasicLayout extends React.Component {
   state = {
     collapsed: false,
+    current: '/welcome',
   };
 
   toggle = () => {
@@ -22,6 +23,9 @@ class BasicLayout extends React.Component {
   jump=({key})=>{
     const history = createHashHistory();
     history.push(key);
+    this.setState({
+      current: key,
+    });
   }
 
   render() {
@@ -29,7 +33,7 @@ class BasicLayout extends React.Component {
       <Layout className={styles.layout}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo">Ant pro lite 😉</div>
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+          <Menu theme="dark" mode="inline" selectedKeys={[this.state.current]}>
             <Menu.Item key="/welcome" onClick={this.jump}>
               <Icon type="user" />
               <span>welcome</span>
